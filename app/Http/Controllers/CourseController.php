@@ -18,4 +18,14 @@ class CourseController extends Controller
 
     return Inertia::render('Courses/show', compact('course'));
     }
+
+    public function toggleProgress(Request $request){
+
+    $id = $request->input('episodeId');
+    $user = auth()->user();
+    $user->episodes()->toggle($id);
+    return $user->episodes;
+    return $request->input('episodeId');
+    }
+    
 }
