@@ -66,6 +66,6 @@ class User extends Authenticatable
     }
 
     public function episodes(){
-        return $this->belongsToMany(Episode::class,'completions','user_id','episode_id');
+        return $this->belongsToMany(Episode::class,'completion','user_id','episode_id');
     }
 }

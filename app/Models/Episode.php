@@ -11,6 +11,8 @@ class Episode extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['title','description','video_url'];
+    
     public function course(){
         return $this->belongsTo(Course::class);
     }
@@ -18,4 +20,7 @@ class Episode extends Model
     public function user(){
         return $this->belongsTo(User::class);
     }
+    // public function users(){
+    //     return $this->belongsToMany(User::class,'completions','user_id','episode_id');
+    // }
 }

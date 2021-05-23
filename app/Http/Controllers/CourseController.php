@@ -5,27 +5,31 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use App\Models\Course;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CourseController extends Controller
 {
     public function index(){
-        $courses = Course::with('user')->withCount('episodes')->get();
+        $courses = Course::with('user')->select('courses.*', DB::raw('(SELECT COUNT(DISTINCT(user_id)) 
+        FROM completion INNER JOIN episodes ON completion.episode_id = episodes.id 
+        WHERE episodes.course_id = courses.id) AS participants'))->withCount('episodes')->latest()->get();
         return Inertia::render('Courses/index', compact('courses'));
     } 
 
     public function show(int $id){
         $course = Course::where('id',$id)->with('episodes')->first();
-
-    return Inertia::render('Courses/show', compact('course'));
+        $watched = auth()->user()->episodes;
+    return Inertia::render('Courses/show', ['course'=>$course,'watched'=>$watched]);
     }
 
     public function toggleProgress(Request $request){
 
     $id = $request->input('episodeId');
     $user = auth()->user();
+    
     $user->episodes()->toggle($id);
     return $user->episodes;
-    return $request->input('episodeId');
+    //return $request->input('episodeId');
     }
     
 }

@@ -17932,14 +17932,37 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ['episodeId'],
+  props: ['episodeId', 'watchedEpisodes'],
+  data: function data() {
+    return {
+      watchedEp: this.watchedEpisodes,
+      isWatched: null
+    };
+  },
   methods: {
     toggleProgress: function toggleProgress() {
+      var _this = this;
+
       axios.post('/toggleProgress', {
         episodeId: this.episodeId
-      }); // .then(response => console.log(response))
-      // .catch(error => console.log(error));
+      }).then(function (response) {
+        if (response.status == 200) {
+          _this.isWatched = !_this.isWatched;
+        }
+      })["catch"](function (error) {
+        return console.log(error);
+      });
+    },
+    isWatchedEpisode: function isWatchedEpisode() {
+      var _this2 = this;
+
+      return this.watchedEp.find(function (episode) {
+        return episode.id == _this2.episodeId;
+      }) ? true : false;
     }
+  },
+  mounted: function mounted() {
+    this.isWatched = this.isWatchedEpisode();
   }
 });
 
@@ -17965,7 +17988,7 @@ __webpack_require__.r(__webpack_exports__);
     AppLayout: _Layouts_AppLayout__WEBPACK_IMPORTED_MODULE_0__.default,
     progressButton: _progressButton__WEBPACK_IMPORTED_MODULE_1__.default
   },
-  props: ['course'],
+  props: ['course', 'watched'],
   data: function data() {
     return {
       courseShow: this.course,
@@ -21820,15 +21843,21 @@ var _hoisted_3 = {
   "class": "text-sm text-gray-600"
 };
 var _hoisted_4 = {
-  "class": "flex justify-between items-center"
+  "class": "text-gray-500 text-sm"
 };
 var _hoisted_5 = {
-  "class": "text-2xl"
+  key: 0
 };
 var _hoisted_6 = {
-  "class": "text-sm text-gray"
+  "class": "flex justify-between items-center"
 };
 var _hoisted_7 = {
+  "class": "text-2xl"
+};
+var _hoisted_8 = {
+  "class": "text-sm text-gray"
+};
+var _hoisted_9 = {
   "class": "text-sm text-gray-600"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
@@ -21845,13 +21874,15 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", {
           "class": "py-2",
           key: course.id
-        }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_3, "Mise en ligne par : " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(course.user.name), 1
+        }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("Mise en ligne par : " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(course.user.name) + " - ", 1
         /* TEXT */
-        ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(course.title), 1
+        ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(course.participants) + " participant", 1
         /* TEXT */
-        ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(course.episodes_count) + " épisodes", 1
+        ), parseInt(course.participants) > 1 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("span", _hoisted_5, "s")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(course.title), 1
         /* TEXT */
-        )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(course.description), 1
+        ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(course.episodes_count) + " épisodes", 1
+        /* TEXT */
+        )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_9, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(course.description), 1
         /* TEXT */
         ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("a", {
           href: '/course/' + course.id,
@@ -21890,7 +21921,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     onClick: _cache[1] || (_cache[1] = function ($event) {
       return $options.toggleProgress($props.episodeId);
     })
-  }, "Términé ?");
+  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(this.isWatched ? 'terminé' : 'terminé ?'), 1
+  /* TEXT */
+  );
 }
 
 /***/ }),
@@ -21929,6 +21962,8 @@ var _hoisted_6 = {
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _this = this;
 
+  var _component_progress_button = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("progress-button");
+
   var _component_app_layout = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("app-layout");
 
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_app_layout, null, {
@@ -21961,7 +21996,12 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
           }
         }, "Voir l'épisode", 8
         /* PROPS */
-        , ["onClick"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <progress-button :episode-id=\"episode.id\"/> ")])]);
+        , ["onClick"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_progress_button, {
+          "episode-id": episode.id,
+          "watched-episodes": $props.watched
+        }, null, 8
+        /* PROPS */
+        , ["episode-id", "watched-episodes"])])]);
       }), 128
       /* KEYED_FRAGMENT */
       ))])])];
